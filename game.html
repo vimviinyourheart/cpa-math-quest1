@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ภารกิจพิชิตโจทย์ปัญหาสมการเชิงเส้นตัวแปรเดียว · CPA Edition</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Sarabun','Segoe UI',Tahoma,sans-serif}
+body{min-height:100vh;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%);background-attachment:fixed;color:#e2e8f0;overflow-x:hidden;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(600px 400px at 15% 20%,rgba(56,189,248,.15),transparent 60%),radial-gradient(600px 400px at 85% 80%,rgba(167,139,250,.15),transparent 60%)}
+#app{position:relative;z-index:1;min-height:100vh}
+.screen{display:none;min-height:100vh;padding:20px}
+.screen.active{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+#screen-home.active,#screen-info.active{display:flex;align-items:center;justify-content:center}
+.home-card{max-width:700px;width:100%;text-align:center;background:rgba(30,41,59,.7);backdrop-filter:blur(14px);border:1px solid rgba(148,163,184,.25);border-radius:24px;padding:50px 35px;box-shadow:0 25px 60px rgba(0,0,0,.5)}
+.home-badge{display:inline-block;padding:6px 16px;border-radius:99px;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:#7dd3fc;font-size:13px;font-weight:600;margin-bottom:20px}
+.home-card h1{font-size:34px;font-weight:700;line-height:1.3;margin-bottom:14px;background:linear-gradient(135deg,#38bdf8,#a78bfa,#fb923c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.home-card p.desc{color:#94a3b8;font-size:15.5px;margin-bottom:26px}
+.cpa-row{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.cpa-chip{padding:8px 16px;border-radius:99px;font-size:13px;font-weight:600;border:1px solid}
+.cpa-chip.c{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.45);color:#7dd3fc}
+.cpa-chip.p{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.45);color:#c4b5fd}
+.cpa-chip.a{background:rgba(251,146,60,.12);border-color:rgba(251,146,60,.45);color:#fdba74}
+.cpa-arrow{color:#64748b;font-size:16px}
+.desc-box{background:rgba(15,23,42,.5);border-left:4px solid #38bdf8;border-radius:12px;padding:14px 18px;font-size:14px;color:#94a3b8;text-align:left;margin-bottom:26px;line-height:1.8}
+
+.btn{display:inline-block;padding:14px 32px;border-radius:14px;font-size:16px;font-weight:600;cursor:pointer;border:none;transition:.2s;font-family:inherit;color:#fff}
+.btn:active{transform:scale(.97)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,#3b82f6,#8b5cf6);box-shadow:0 8px 24px rgba(99,102,241,.4)}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1)}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 8px 24px rgba(16,185,129,.4)}
+.btn-success:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1)}
+.btn-warn{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 6px 18px rgba(245,158,11,.35)}
+.btn-warn:hover:not(:disabled){transform:translateY(-2px)}
+.btn-ghost{background:rgba(148,163,184,.15);border:1px solid rgba(148,163,184,.3)}
+.btn-ghost:hover:not(:disabled){background:rgba(148,163,184,.25)}
+.btn-block{width:100%}
+
+.form-card{max-width:520px;width:100%;background:rgba(30,41,59,.75);backdrop-filter:blur(14px);border:1px solid rgba(148,163,184,.25);border-radius:24px;padding:40px 34px;box-shadow:0 25px 60px rgba(0,0,0,.5)}
+.form-card h2{text-align:center;font-size:24px;margin-bottom:8px;color:#7dd3fc}
+.form-card .subtitle{text-align:center;color:#94a3b8;font-size:14px;margin-bottom:26px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:14px;color:#94a3b8;margin-bottom:6px;font-weight:600}
+.form-group input{width:100%;padding:12px 16px;border-radius:12px;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.25);color:#e2e8f0;font-size:16px;font-family:inherit;outline:none;transition:.2s}
+.form-group input:focus{border-color:#60a5fa;box-shadow:0 0 0 3px rgba(96,165,250,.2)}
+
+.game-header{max-width:900px;margin:0 auto 18px;background:rgba(30,41,59,.8);backdrop-filter:blur(14px);border:1px solid rgba(148,163,184,.25);border-radius:18px;padding:16px 20px;position:sticky;top:14px;z-index:10;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.header-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.player-info{display:flex;align-items:center;gap:10px;font-size:14px}
+.player-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:grid;place-items:center;font-weight:700;color:#fff;font-size:14px}
+.player-name{font-weight:600;color:#e2e8f0}.player-sub{color:#94a3b8;font-size:12px}
+.stage-chip{padding:6px 14px;border-radius:99px;font-size:13px;font-weight:600;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:#7dd3fc}
+.stage-chip.p{background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.4);color:#c4b5fd}
+.stage-chip.a{background:rgba(251,146,60,.15);border-color:rgba(251,146,60,.4);color:#fdba74}
+.score-chip{padding:6px 14px;border-radius:99px;font-size:14px;font-weight:700;background:rgba(250,204,21,.15);border:1px solid rgba(250,204,21,.4);color:#fde047}
+.header-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;font-size:13px;color:#94a3b8}
+.progress-track{flex:1;height:8px;border-radius:99px;overflow:hidden;background:rgba(148,163,184,.15)}
+.progress-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#38bdf8,#a78bfa,#fb923c);transition:width .5s ease}
+
+.q-wrap{max-width:900px;margin:0 auto;padding-bottom:40px}
+.q-card{background:rgba(30,41,59,.75);backdrop-filter:blur(14px);border:1px solid rgba(148,163,184,.25);border-radius:20px;padding:24px;box-shadow:0 12px 30px rgba(0,0,0,.3);margin-bottom:18px;animation:fadeIn .35s ease}
+.q-title{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:16px;color:#7dd3fc;font-weight:700}
+.q-title .num-badge{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:rgba(56,189,248,.2);color:#7dd3fc;font-size:13px}
+.q-story{font-size:16px;line-height:1.9;color:#e2e8f0;padding:16px 18px;border-radius:14px;background:rgba(15,23,42,.5);border-left:4px solid #38bdf8}
+.q-story b{color:#fde047}
+
+.step-box{background:rgba(30,41,59,.7);backdrop-filter:blur(14px);border:1px solid rgba(148,163,184,.25);border-radius:18px;padding:20px;margin-bottom:14px;animation:fadeIn .35s ease}
+.step-box.done{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.35)}
+.step-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.step-circle{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;background:rgba(56,189,248,.18);color:#7dd3fc;border:2px solid rgba(56,189,248,.5)}
+.step-box.done .step-circle{background:rgba(16,185,129,.25);color:#6ee7b7;border-color:rgba(16,185,129,.6)}
+.step-q{flex:1;font-size:15px;color:#e2e8f0;padding-top:5px;font-weight:500;min-width:180px}
+.step-pts{font-size:12px;padding:4px 10px;border-radius:99px;background:rgba(250,204,21,.15);color:#fde047;font-weight:700;border:1px solid rgba(250,204,21,.35);flex:none}
+
+.wg{padding:14px;background:rgba(15,23,42,.5);border:1px solid rgba(148,163,184,.2);border-radius:14px}
+.wg-note{font-size:13.5px;color:#94a3b8;margin-bottom:12px;line-height:1.7}
+.wg-note b{color:#fde047}
+.wg-summary{margin-top:14px;padding-top:12px;border-top:1px dashed rgba(148,163,184,.25);font-size:14.5px;color:#94a3b8}
+.wg-summary b{color:#fde047;font-size:16px}
+
+.zone-list{display:flex;flex-direction:column;gap:10px}
+.czone{background:rgba(148,163,184,.06);border:1px dashed rgba(148,163,184,.3);border-radius:12px;padding:10px 12px;min-height:60px}
+.czone-head{font-size:13.5px;color:#94a3b8;margin-bottom:8px;font-weight:600}
+.czone-head b{color:#fde047;font-size:15px}
+.czone.pool{background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.3)}
+.coin-row{display:flex;flex-wrap:wrap;gap:6px;min-height:34px}
+.coin{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#fde047,#f59e0b);border:2px solid #b45309;cursor:pointer;font-size:16px;display:grid;place-items:center;transition:.15s;font-family:inherit}
+.coin:hover{transform:scale(1.1) rotate(-8deg)}
+
+.bzone-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bzone{background:rgba(148,163,184,.06);border:1px dashed rgba(148,163,184,.3);border-radius:12px;padding:10px 12px;min-height:80px}
+.bzone.pool{grid-column:1/-1;background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.3)}
+.bzone-head{font-size:13.5px;color:#94a3b8;margin-bottom:8px;font-weight:600}
+.bzone-head b{color:#fde047;font-size:15px}
+.bundle-row{display:flex;flex-wrap:wrap;gap:6px;min-height:36px}
+.bundle{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#a78bfa,#7c3aed);border:2px solid #6d28d9;cursor:pointer;display:grid;place-items:center;font-size:12px;color:#fff;font-weight:700;transition:.15s;font-family:inherit}
+.bundle.b2{background:linear-gradient(135deg,#38bdf8,#0284c7);border-color:#075985}
+.bundle:hover{transform:translateY(-3px)}
+
+.stepper-row{display:flex;align-items:center;justify-content:space-between;background:rgba(148,163,184,.06);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:12px 14px;margin-bottom:8px;gap:10px;flex-wrap:wrap}
+.stepper-row .lbl{font-size:14px;color:#94a3b8}
+.stepper-row .lbl b{color:#fde047;font-size:15px}
+.stepper-ctrl{display:flex;align-items:center;gap:8px}
+.stepper-btn{width:36px;height:36px;border-radius:10px;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:#7dd3fc;font-size:18px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.stepper-btn:hover{background:rgba(56,189,248,.3)}
+.stepper-val{width:66px;text-align:center;font-size:18px;font-weight:700;color:#fde047}
+
+.age-timeline{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.tl-col{background:rgba(148,163,184,.06);border:1px solid rgba(148,163,184,.2);border-radius:12px;padding:12px}
+.tl-col h4{font-size:12.5px;color:#94a3b8;margin-bottom:8px;font-weight:600}
+.tl-col .row{display:flex;justify-content:space-between;font-size:14px;margin:5px 0}
+.tl-col .row b{color:#fde047;font-size:15px}
+.ratio-big{font-size:16px;font-weight:700;text-align:center;margin-top:14px;color:#93c5fd;padding:10px;border-radius:10px;background:rgba(147,197,253,.08)}
+.ratio-big.good{color:#34d399;background:rgba(52,211,153,.12)}
+
+.ticket-grid{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.ticket{background:linear-gradient(135deg,rgba(96,165,250,.18),rgba(139,92,246,.14));border:1px dashed rgba(147,197,253,.5);border-radius:12px;padding:10px 14px;font-size:13.5px;text-align:center;min-width:96px}
+.ticket .p{font-size:17px;font-weight:700;color:#fde047;display:block;margin-top:3px}
+
+.bag-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px;margin-bottom:12px}
+.bag{border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;user-select:none;background:rgba(255,255,255,.05);border:2px solid rgba(148,163,184,.25);transition:.15s;font-size:11px;color:#94a3b8;font-family:inherit}
+.bag:hover{transform:translateY(-3px)}
+.bag.durian{background:rgba(251,191,36,.16);border-color:rgba(251,191,36,.6);color:#fde047}
+.bag.mangosteen{background:rgba(167,139,250,.16);border-color:rgba(167,139,250,.6);color:#ddd6fe}
+.bag .em{font-size:22px;display:block}
+
+.bar-model-box{background:rgba(148,163,184,.06);border:1px solid rgba(148,163,184,.25);border-radius:14px;padding:16px;margin-bottom:12px}
+.bar-row{display:flex;gap:6px;margin-bottom:10px;align-items:stretch;flex-wrap:wrap}
+.bar-seg{flex:1;min-width:70px;min-height:60px;border-radius:10px;background:rgba(148,163,184,.1);border:2px dashed rgba(148,163,184,.35);display:grid;place-items:center;font-size:14px;color:#94a3b8;padding:8px;cursor:pointer;text-align:center;transition:.15s;line-height:1.4;font-family:inherit;font-weight:600}
+.bar-seg:hover{border-color:#60a5fa}
+.bar-seg.filled{background:linear-gradient(135deg,rgba(96,165,250,.28),rgba(139,92,246,.22));border:2px solid #60a5fa;color:#e0e7ff}
+.bar-row-label{font-size:13px;color:#94a3b8;width:100%;margin-bottom:4px}
+.label-pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pool-label{padding:9px 14px;border-radius:10px;background:rgba(148,163,184,.12);border:1px solid rgba(148,163,184,.3);color:#e2e8f0;font-size:13.5px;font-weight:600;cursor:pointer;transition:.15s;font-family:inherit}
+.pool-label:hover:not(:disabled){background:rgba(96,165,250,.2);border-color:#60a5fa;transform:translateY(-2px)}
+.pool-label:disabled{opacity:.3;cursor:not-allowed}
+
+.step-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.step-actions .btn{padding:10px 22px;font-size:14.5px}
+.feedback{margin-top:12px;padding:12px 16px;border-radius:12px;font-size:14.5px;display:none;line-height:1.6}
+.feedback.show{display:block;animation:fadeIn .3s ease}
+.feedback.ok{background:rgba(16,185,129,.12);border-left:4px solid #10b981;color:#6ee7b7}
+.feedback.err{background:rgba(239,68,68,.12);border-left:4px solid #ef4444;color:#fca5a5}
+.feedback.hint{background:rgba(250,204,21,.12);border-left:4px solid #fbbf24;color:#fde047}
+
+.options-list{display:flex;flex-direction:column;gap:8px}
+.opt-btn{padding:12px 16px;border-radius:12px;text-align:left;background:rgba(15,23,42,.5);border:2px solid rgba(148,163,184,.2);color:#e2e8f0;font-size:15px;font-family:inherit;cursor:pointer;transition:.15s}
+.opt-btn:hover:not(:disabled){border-color:#60a5fa;background:rgba(96,165,250,.1)}
+.opt-btn.correct{background:rgba(16,185,129,.15);border-color:#10b981;color:#6ee7b7}
+.opt-btn.wrong{background:rgba(239,68,68,.12);border-color:#ef4444;color:#fca5a5}
+.opt-btn:disabled{cursor:not-allowed}
+
+.eq-display{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:16px;border-radius:12px;margin-bottom:14px;background:rgba(15,23,42,.5);border:1px dashed rgba(148,163,184,.3);font-size:17px}
+.eq-slot{min-width:78px;min-height:44px;padding:8px 14px;border-radius:10px;background:rgba(250,204,21,.1);border:2px dashed rgba(250,204,21,.5);color:#fde047;font-size:15px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;font-family:inherit}
+.eq-slot.filled{background:rgba(96,165,250,.15);border-style:solid;border-color:#60a5fa;color:#bfdbfe}
+.eq-slot.selected{border-color:#fbbf24;box-shadow:0 0 0 3px rgba(251,191,36,.25)}
+.eq-text{color:#94a3b8;font-size:16px}
+.eq-pool{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.eq-chip{padding:10px 16px;border-radius:10px;font-size:14.5px;font-weight:600;background:rgba(148,163,184,.12);border:1px solid rgba(148,163,184,.3);color:#e2e8f0;cursor:pointer;transition:.15s;font-family:inherit}
+.eq-chip:hover:not(:disabled){background:rgba(96,165,250,.2);border-color:#60a5fa;transform:translateY(-2px)}
+.eq-chip.used{opacity:.35;pointer-events:none}
+
+.num-input-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.num-input{flex:1;min-width:160px;padding:14px 16px;border-radius:12px;background:rgba(15,23,42,.7);border:2px solid rgba(148,163,184,.3);color:#e2e8f0;font-size:17px;font-family:inherit;outline:none;transition:.15s}
+.num-input:focus{border-color:#60a5fa;box-shadow:0 0 0 3px rgba(96,165,250,.2)}
+.num-unit{font-size:16px;color:#94a3b8;font-weight:600}
+
+.stage-end-card,.final-card{max-width:680px;margin:40px auto;background:rgba(30,41,59,.8);backdrop-filter:blur(14px);border:1px solid rgba(148,163,184,.25);border-radius:24px;padding:40px 30px;text-align:center;box-shadow:0 25px 60px rgba(0,0,0,.5)}
+.big-icon{font-size:64px;margin-bottom:12px}
+.stage-end-card h2,.final-card h2{font-size:28px;margin-bottom:10px;background:linear-gradient(135deg,#38bdf8,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stage-end-card p,.final-card p{color:#94a3b8;margin-bottom:8px;font-size:15px}
+.stage-score{font-size:44px;font-weight:700;margin:20px 0;color:#fde047}
+.stage-score small{font-size:18px;color:#94a3b8;font-weight:500}
+.cpa-bridge{margin:18px 0;padding:16px 18px;border-radius:14px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.28);font-size:13.5px;color:#7dd3fc;line-height:1.8;text-align:left}
+.cpa-bridge b{color:#fde047}
+.cpa-bridge .arrow{display:block;text-align:center;font-size:20px;margin:6px 0;color:#a78bfa}
+
+.final-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
+.final-stat{padding:16px 10px;border-radius:14px;background:rgba(15,23,42,.5);border:1px solid rgba(148,163,184,.2)}
+.final-stat .lbl{font-size:12px;color:#94a3b8;margin-bottom:6px;font-weight:600}
+.final-stat .val{font-size:22px;font-weight:700}
+.final-stat.c .val{color:#7dd3fc}.final-stat.p .val{color:#c4b5fd}.final-stat.a .val{color:#fdba74}
+.final-message{padding:18px;border-radius:14px;margin:18px 0;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.3);color:#7dd3fc;font-size:15px}
+
+.send-status{margin-top:14px;padding:12px 16px;border-radius:12px;font-size:14.5px;display:none;text-align:center;line-height:1.6;animation:fadeIn .3s ease}
+.send-status.show{display:block}
+.send-status.loading{background:rgba(56,189,248,.12);border-left:4px solid #38bdf8;color:#7dd3fc}
+.send-status.success{background:rgba(16,185,129,.12);border-left:4px solid #10b981;color:#6ee7b7}
+.send-status.error{background:rgba(239,68,68,.12);border-left:4px solid #ef4444;color:#fca5a5}
+
+@media (max-width:600px){
+  .home-card{padding:34px 22px}.home-card h1{font-size:24px}
+  .form-card{padding:28px 22px}
+  .q-card{padding:18px}.q-story{font-size:14.5px;padding:14px}
+  .game-header{padding:12px 14px;top:8px}
+  .final-stats{grid-template-columns:1fr}
+  .age-timeline{grid-template-columns:1fr}
+  .bzone-pair{grid-template-columns:1fr}
+  .btn{padding:12px 24px;font-size:15px}
+  .step-actions .btn{flex:1;min-width:110px}
+  .bar-row{flex-wrap:wrap}
+  .bar-seg{min-width:60px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div id="screen-home" class="screen active">
+    <div class="home-card">
+      <div class="home-badge">คณิตศาสตร์ ม.1 · หลักสูตรแกนกลาง 2551 (ปรับปรุง 2560)</div>
+      <h1>ภารกิจพิชิตโจทย์ปัญหา<br>สมการเชิงเส้นตัวแปรเดียว</h1>
+      <p class="desc">ออกเดินทางผ่าน 3 ขั้นตอนตามแนวคิด CPA</p>
+      <div class="cpa-row">
+        <span class="cpa-chip c">🧱 ลงมือจัดกระทำ</span>
+        <span class="cpa-arrow">→</span>
+        <span class="cpa-chip p">📊 สร้างแบบจำลอง</span>
+        <span class="cpa-arrow">→</span>
+        <span class="cpa-chip a">🧠 ใช้สมการ</span>
+      </div>
+      <div class="desc-box">
+        <b style="color:#7dd3fc">ด่าน 1 · Concrete</b> — ลงมือจัดเรียงสิ่งของจริงเพื่อเห็นความสัมพันธ์ของปริมาณ<br>
+        <b style="color:#c4b5fd">ด่าน 2 · Pictorial</b> — แทนความสัมพันธ์นั้นด้วย Bar Model<br>
+        <b style="color:#fdba74">ด่าน 3 · Abstract</b> — ใช้ตัวแปรและสมการแก้ปัญหาด้วยตนเอง
+      </div>
+      <button id="btnStart" class="btn btn-primary" style="font-size:18px;padding:16px 48px;">🚀 เริ่มเกม</button>
+    </div>
+  </div>
+
+  <div id="screen-info" class="screen">
+    <div class="form-card">
+      <h2>📝 ข้อมูลผู้เรียน</h2>
+      <p class="subtitle">กรอกข้อมูลเพื่อเริ่มภารกิจ</p>
+      <div class="form-group"><label>ชื่อ - สกุล</label><input type="text" id="inpName" placeholder="เช่น สมชาย ใจดี" maxlength="60"></div>
+      <div class="form-group"><label>ชั้น / ห้อง</label><input type="text" id="inpClass" placeholder="เช่น ม.1/1" maxlength="20"></div>
+      <div class="form-group"><label>เลขที่</label><input type="number" id="inpNo" placeholder="เช่น 12" min="1" max="99"></div>
+      <button id="btnConfirmInfo" class="btn btn-primary btn-block" style="margin-top:8px;">เข้าสู่ด่านที่ 1 →</button>
+      <button id="btnBackHome" class="btn btn-ghost btn-block" style="margin-top:10px;">← กลับหน้าแรก</button>
+    </div>
+  </div>
+
+  <div id="screen-game" class="screen">
+    <div class="game-header">
+      <div class="header-row">
+        <div class="player-info">
+          <div class="player-avatar" id="avatar">?</div>
+          <div>
+            <div class="player-name" id="hdrName">-</div>
+            <div class="player-sub" id="hdrSub">-</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <span class="stage-chip" id="hdrStage">ด่าน 1 · Concrete</span>
+          <span class="score-chip">⭐ <span id="hdrScore">0</span></span>
+        </div>
+      </div>
+      <div class="header-meta">
+        <span id="hdrQ">ข้อ 1 / 5</span>
+        <div class="progress-track"><div class="progress-fill" id="hdrProgress"></div></div>
+        <span id="hdrPercent">0%</span>
+      </div>
+    </div>
+    <div class="q-wrap" id="qWrap"></div>
+  </div>
+
+  <div id="screen-stageend" class="screen">
+    <div class="stage-end-card">
+      <div class="big-icon" id="seIcon">🏆</div>
+      <h2 id="seTitle">ผ่านด่านแล้ว!</h2>
+      <p id="seSubtitle">-</p>
+      <div class="stage-score"><span id="seScore">0</span><small> / 500 คะแนน</small></div>
+      <p id="seStars" style="font-size:24px;">⭐⭐⭐</p>
+      <div class="cpa-bridge" id="seBridge"></div>
+      <button id="btnNextStage" class="btn btn-primary">ไปด่านถัดไป →</button>
+    </div>
+  </div>
+
+  <div id="screen-final" class="screen">
+    <div class="final-card">
+      <div class="big-icon">🎉</div>
+      <h2>ภารกิจสำเร็จ!</h2>
+      <p>คุณผ่านครบทั้ง 3 ขั้นของ CPA</p>
+      <div class="stage-score"><span id="finalScore">0</span><small> / 1500 คะแนน</small></div>
+      <div class="final-stats">
+        <div class="final-stat c"><div class="lbl">🧱 Concrete</div><div class="val" id="fsC">0</div></div>
+        <div class="final-stat p"><div class="lbl">📊 Pictorial</div><div class="val" id="fsP">0</div></div>
+        <div class="final-stat a"><div class="lbl">🧠 Abstract</div><div class="val" id="fsA">0</div></div>
+      </div>
+      <p>ทำภารกิจได้ <b id="fsPerfect" style="color:#6ee7b7;font-size:18px;">0</b> / 15 ข้อ</p>
+      <div class="final-message" id="finalMsg">-</div>
+
+      <button id="btnSendScore" class="btn btn-success" style="margin-top:20px;width:100%;">📤 ส่งคะแนน</button>
+      <div id="sendStatus" class="send-status"></div>
+
+      <button id="btnPlayAgain" class="btn btn-primary" style="margin-top:12px;">🔄 เล่นอีกครั้ง</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const WIDGETS = {
+
+  coinsSplit(container){
+    const N = 7;
+    const state = Array(N).fill('pool');
+    function render(){
+      const a = state.filter(x=>x==='A').length;
+      const b = state.filter(x=>x==='B').length;
+      const p = N - a - b;
+      container.innerHTML = `
+        <div class="wg">
+          <div class="wg-note">💰 เหรียญละ 50 บาท · มีทั้งหมด 7 เหรียญ (350 บาท)<br><b>คลิกเหรียญ</b> เพื่อย้าย: กองกลาง → พี่ → น้อง → กองกลาง</div>
+          <div class="zone-list">
+            <div class="czone">
+              <div class="czone-head">🧑 พี่มี <b>${a*50}</b> บาท (${a} เหรียญ)</div>
+              <div class="coin-row">${state.map((s,i)=>s==='A'?`<button class="coin" data-i="${i}" type="button">💰</button>`:'').join('')}</div>
+            </div>
+            <div class="czone">
+              <div class="czone-head">👦 น้องมี <b>${b*50}</b> บาท (${b} เหรียญ)</div>
+              <div class="coin-row">${state.map((s,i)=>s==='B'?`<button class="coin" data-i="${i}" type="button">💰</button>`:'').join('')}</div>
+            </div>
+            <div class="czone pool">
+              <div class="czone-head">🪙 กองกลาง (${p} เหรียญ)</div>
+              <div class="coin-row">${state.map((s,i)=>s==='pool'?`<button class="coin" data-i="${i}" type="button">💰</button>`:'').join('')}</div>
+            </div>
+          </div>
+          <div class="wg-summary">รวม <b>${(a+b)*50}</b> บาท · ผลต่าง (พี่ − น้อง) <b>${(a-b)*50}</b> บาท</div>
+        </div>`;
+      container.querySelectorAll('.coin').forEach(c=>{
+        c.onclick = () => {
+          const i = +c.dataset.i;
+          state[i] = state[i]==='pool' ? 'A' : state[i]==='A' ? 'B' : 'pool';
+          render();
+        };
+      });
+    }
+    render();
+    return {
+      check(){
+        const a = state.filter(x=>x==='A').length;
+        const b = state.filter(x=>x==='B').length;
+        const p = state.filter(x=>x==='pool').length;
+        if (p > 0) return { ok:false, msg:`ยังมีอีก ${p} เหรียญที่ยังไม่ได้วางไว้กับพี่หรือน้อง ลองวางให้ครบก่อนนะ` };
+        if ((a-b)*50 === 50) return { ok:true, msg:`เยี่ยม! พี่มี ${a*50} บาท · น้องมี ${b*50} บาท · ผลต่าง 50 บาทตรงตามสถานการณ์` };
+        return { ok:false, msg:`ผลต่างตอนนี้คือ ${(a-b)*50} บาท · ต้องให้เป็น 50 บาทพอดี ลองขยับเหรียญดูใหม่` };
+      }
+    };
+  },
+
+  bundlesSplit(container){
+    const N = 10;
+    const state = Array(N).fill('pool');
+    function render(){
+      const a = state.filter(x=>x==='A').length;
+      const b = state.filter(x=>x==='B').length;
+      const p = N - a - b;
+      container.innerHTML = `
+        <div class="wg">
+          <div class="wg-note">📚 หนังสือถูกมัดชุดละ 6 เล่ม · มี 10 ชุด (60 เล่ม)<br><b>คลิกที่มัด</b> เพื่อย้าย: กองกลาง → การ์ตูน → นิทาน → กองกลาง</div>
+          <div class="bzone-pair">
+            <div class="bzone">
+              <div class="bzone-head">📕 การ์ตูน <b>${a*6}</b> เล่ม (${a} ชุด)</div>
+              <div class="bundle-row">${state.map((s,i)=>s==='A'?`<button class="bundle" data-i="${i}" type="button">6</button>`:'').join('')}</div>
+            </div>
+            <div class="bzone">
+              <div class="bzone-head">📘 นิทาน <b>${b*6}</b> เล่ม (${b} ชุด)</div>
+              <div class="bundle-row">${state.map((s,i)=>s==='B'?`<button class="bundle b2" data-i="${i}" type="button">6</button>`:'').join('')}</div>
+            </div>
+            <div class="bzone pool">
+              <div class="bzone-head">📦 กองกลาง (${p} ชุด)</div>
+              <div class="bundle-row">${state.map((s,i)=>s==='pool'?`<button class="bundle" data-i="${i}" type="button">6</button>`:'').join('')}</div>
+            </div>
+          </div>
+          <div class="wg-summary">รวม <b>${(a+b)*6}</b> เล่ม · ผลต่าง (นิทาน − การ์ตูน) <b>${(b-a)*6}</b> เล่ม</div>
+        </div>`;
+      container.querySelectorAll('.bundle').forEach(btn=>{
+        btn.onclick = () => {
+          const i = +btn.dataset.i;
+          state[i] = state[i]==='pool' ? 'A' : state[i]==='A' ? 'B' : 'pool';
+          render();
+        };
+      });
+    }
+    render();
+    return {
+      check(){
+        const a = state.filter(x=>x==='A').length;
+        const b = state.filter(x=>x==='B').length;
+        const p = state.filter(x=>x==='pool').length;
+        if (p > 0) return { ok:false, msg:`ยังมีอีก ${p} ชุดที่ยังไม่ได้วาง ลองวางให้ครบก่อนนะ` };
+        if ((b-a)*6 === 12) return { ok:true, msg:`ถูกต้อง! การ์ตูน ${a*6} เล่ม · นิทาน ${b*6} เล่ม · ต่างกัน 12 เล่มพอดี` };
+        return { ok:false, msg:`ผลต่างตอนนี้ ${(b-a)*6} เล่ม · ต้องให้เป็น 12 เล่มพอดี` };
+      }
+    };
+  },
+
+  ageStepper(container){
+    let gAge = 20;
+    function render(){
+      const pAge = gAge + 48;
+      const fgAge = gAge + 8;
+      const fpAge = pAge + 8;
+      const r = fpAge / fgAge;
+      container.innerHTML = `
+        <div class="wg">
+          <div class="wg-note">👴 ปัจจุบันปู่มีอายุมากกว่าหลาน 48 ปี · อีก 8 ปีข้างหน้า ปู่จะมีอายุเป็น 3 เท่าของหลาน<br><b>กดปุ่ม +/−</b> เพื่อปรับอายุหลานในปัจจุบัน</div>
+          <div class="stepper-row">
+            <div class="lbl">อายุหลานตอนนี้</div>
+            <div class="stepper-ctrl">
+              <button class="stepper-btn" data-d="-1" type="button">−</button>
+              <div class="stepper-val">${gAge}</div>
+              <button class="stepper-btn" data-d="1" type="button">+</button>
+            </div>
+          </div>
+          <div class="age-timeline">
+            <div class="tl-col">
+              <h4>🕐 ปัจจุบัน</h4>
+              <div class="row"><span>หลาน</span><b>${gAge} ปี</b></div>
+              <div class="row"><span>ปู่</span><b>${pAge} ปี</b></div>
+            </div>
+            <div class="tl-col">
+              <h4>⏩ อีก 8 ปี</h4>
+              <div class="row"><span>หลาน</span><b>${fgAge} ปี</b></div>
+              <div class="row"><span>ปู่</span><b>${fpAge} ปี</b></div>
+            </div>
+          </div>
+          <div class="ratio-big ${Math.abs(r-3)<1e-9?'good':''}">อีก 8 ปี ปู่เป็น ${r.toFixed(2)} เท่าของหลาน</div>
+        </div>`;
+      container.querySelectorAll('.stepper-btn').forEach(b=>{
+        b.onclick = () => {
+          gAge = Math.max(1, Math.min(50, gAge + (+b.dataset.d)));
+          render();
+        };
+      });
+    }
+    render();
+    return {
+      check(){
+        if (gAge + 56 === 3 * (gAge + 8))
+          return { ok:true, msg:`ถูกต้อง! หลาน ${gAge} ปี · ปู่ ${gAge+48} ปี · อีก 8 ปี หลาน ${gAge+8} ปี ปู่ ${gAge+56} ปี = 3 เท่าพอดี` };
+        return { ok:false, msg:'ยังไม่ใช่นะ ลองกด +/− ปรับอายุหลาน ให้ตัวเลข "เท่า" ด้านล่างเป็น 3.00 พอดี' };
+      }
+    };
+  },
+
+  ticketStepper(container){
+    let childPrice = 30;
+    function render(){
+      const adultPrice = childPrice + 20;
+      const total = 2*adultPrice + 3*childPrice;
+      container.innerHTML = `
+        <div class="wg">
+          <div class="wg-note">🎫 ซื้อบัตรผู้ใหญ่ 2 ใบ · บัตรเด็ก 3 ใบ · รวมจ่าย 340 บาท<br>บัตรผู้ใหญ่แพงกว่าบัตรเด็ก 20 บาท · <b>กดปุ่ม +/−</b> ปรับราคาบัตรเด็ก</div>
+          <div class="ticket-grid">
+            <div class="ticket">👨 บัตรผู้ใหญ่ × 2<span class="p">${adultPrice} ฿/ใบ</span></div>
+            <div class="ticket">🧒 บัตรเด็ก × 3<span class="p">${childPrice} ฿/ใบ</span></div>
+          </div>
+          <div class="stepper-row">
+            <div class="lbl">ราคาบัตรเด็ก</div>
+            <div class="stepper-ctrl">
+              <button class="stepper-btn" data-d="-5" type="button">−</button>
+              <div class="stepper-val">${childPrice}</div>
+              <button class="stepper-btn" data-d="5" type="button">+</button>
+            </div>
+          </div>
+          <div class="stepper-row">
+            <div class="lbl">ราคาบัตรผู้ใหญ่ (เด็ก + 20) <b>${adultPrice}</b> บาท</div>
+          </div>
+          <div class="wg-summary">2×${adultPrice} + 3×${childPrice} = <b>${total}</b> บาท</div>
+        </div>`;
+      container.querySelectorAll('.stepper-btn').forEach(b=>{
+        b.onclick = () => {
+          childPrice = Math.max(0, Math.min(100, childPrice + (+b.dataset.d)));
+          render();
+        };
+      });
+    }
+    render();
+    return {
+      check(){
+        const adult = childPrice + 20;
+        const total = 2*adult + 3*childPrice;
+        if (total === 340) return { ok:true, msg:`ถูกต้อง! บัตรเด็ก ${childPrice} บาท · บัตรผู้ใหญ่ ${adult} บาท · รวม 2×${adult}+3×${childPrice}=340 บาท` };
+        return { ok:false, msg:`ยอดรวมตอนนี้ ${total} บาท · ต้องให้เป็น 340 บาทพอดี` };
+      }
+    };
+  },
+
+  bagToggle(container){
+    const N = 12;
+    const state = Array(N).fill('m');
+    function render(){
+      const d = state.filter(x=>x==='d').length;
+      const m = N - d;
+      const total = d*3 + m*5;
+      container.innerHTML = `
+        <div class="wg">
+          <div class="wg-note">🥭 ถุงทุเรียนใส่ 3 ลูก/ถุง · 🍇 ถุงมังคุดใส่ 5 ลูก/ถุง · มี 12 ถุง · ใช้ผลไม้รวม 50 ลูก<br><b>คลิกที่ถุง</b> เพื่อสลับชนิด</div>
+          <div class="bag-grid">
+            ${state.map((s,i)=>`
+              <button class="bag ${s==='d'?'durian':'mangosteen'}" data-i="${i}" type="button">
+                <span class="em">${s==='d'?'🥭':'🍇'}</span>${s==='d'?'ทุเรียน':'มังคุด'}
+              </button>`).join('')}
+          </div>
+          <div class="wg-summary">ทุเรียน <b>${d}</b> ถุง · มังคุด <b>${m}</b> ถุง · ผลไม้รวม <b>${total}</b> ลูก</div>
+        </div>`;
+      container.querySelectorAll('.bag').forEach(b=>{
+        b.onclick = () => {
+          const i = +b.dataset.i;
+          state[i] = state[i]==='d' ? 'm' : 'd';
+          render();
+        };
+      });
+    }
+    render();
+    return {
+      check(){
+        const d = state.filter(x=>x==='d').length;
+        const m = N - d;
+        const total = d*3 + m*5;
+        if (total === 50) return { ok:true, msg:`ถูกต้อง! ทุเรียน ${d} ถุง (${d*3} ลูก) · มังคุด ${m} ถุง (${m*5} ลูก) · รวม 50 ลูก` };
+        return { ok:false, msg:`ตอนนี้ผลไม้รวม ${total} ลูก · ต้องให้เป็น 50 ลูกพอดี` };
+      }
+    };
+  },
+
+  barBuild(container, step){
+    const rows = step.barRows;
+    const pool = step.barPool;
+    const correct = step.barCorrect;
+    const totalSlots = rows.reduce((s,r)=>s+r.slots,0);
+    const selections = new Array(totalSlots).fill(null);
+    const usedChipIdx = new Set();
+    let activeSlot = null;
+
+    function render(){
+      let html = `<div class="wg">
+        <div class="wg-note">${step.barNote || 'คลิกช่องในแท่ง แล้วคลิกป้ายด้านล่างเพื่อใส่ลงช่อง'}</div>
+        <div class="bar-model-box">`;
+      let slotIdx = 0;
+      rows.forEach((row, ri) => {
+        html += `<div class="bar-row-label" style="font-size:13px;color:#94a3b8;margin-bottom:6px">${row.label}</div>`;
+        html += `<div class="bar-row">`;
+        for (let k=0;k<row.slots;k++){
+          const s = selections[slotIdx];
+          const isActive = (activeSlot === slotIdx);
+          html += `<button class="bar-seg ${s?'filled':''}" data-slot="${slotIdx}" style="border-color:${isActive?'#fbbf24':''};${isActive?'box-shadow:0 0 0 3px rgba(251,191,36,.25)':''}" type="button">${s ? s.label : '?'}</button>`;
+          slotIdx++;
+        }
+        html += `</div>`;
+      });
+      if (step.barTrailer){
+        html += `<div style="text-align:center;margin-top:6px;color:#94a3b8;font-size:14px">${step.barTrailer}</div>`;
+      }
+      html += `</div>
+        <div class="label-pool">
+          ${pool.map((p,pi)=>`<button class="pool-label" data-pi="${pi}" ${usedChipIdx.has(pi)?'disabled':''} type="button">${p}</button>`).join('')}
+        </div>
+      </div>`;
+      container.innerHTML = html;
+
+      container.querySelectorAll('.bar-seg').forEach(b=>{
+        b.onclick = () => {
+          const i = +b.dataset.slot;
+          if (selections[i]){
+            usedChipIdx.delete(selections[i].poolIndex);
+            selections[i] = null;
+            activeSlot = i;
+          } else {
+            activeSlot = (activeSlot === i) ? null : i;
+          }
+          render();
+        };
+      });
+      container.querySelectorAll('.pool-label').forEach(b=>{
+        b.onclick = () => {
+          const pi = +b.dataset.pi;
+          if (usedChipIdx.has(pi)) return;
+          let target = activeSlot;
+          if (target === null || selections[target]){
+            target = selections.findIndex(s => s === null);
+          }
+          if (target < 0) return;
+          selections[target] = { label: pool[pi], poolIndex: pi };
+          usedChipIdx.add(pi);
+          activeSlot = null;
+          render();
+        };
+      });
+    }
+    render();
+
+    return {
+      check(){
+        if (selections.some(s => s === null))
+          return { ok:false, msg:'ยังมีช่องว่างที่ยังไม่ได้ใส่ป้าย ลองเติมให้ครบก่อนนะ' };
+        const labels = selections.map(s => s.label);
+        const ok = labels.length === correct.length &&
+          labels.every((l,i) => l === correct[i]);
+        if (ok) return { ok:true, msg: step.barSuccess || 'ถูกต้อง! แบบจำลองนี้ตรงกับสถานการณ์ในโจทย์' };
+        return { ok:false, msg: step.barFail || 'ยังไม่ถูก ลองพิจารณาว่า "ส่วนที่ไม่ทราบค่า" ควรแทนด้วยอะไร' };
+      }
+    };
+  }
+};
+
+const QUESTIONS = {
+  1: [
+    {
+      title: 'กระปุกออมสินของพี่น้อง',
+      story: 'พี่และน้องเก็บเงินใส่กระปุกออมสินด้วยกัน · <b>พี่มีเงินมากกว่าน้อง 50 บาท</b> · รวมเงินทั้งสองคนได้ <b>350 บาท</b>',
+      steps: [
+        { type:'widget', widget:'coinsSplit', points:100,
+          q:'🧱 ลงมือทำ · คลิกเหรียญเพื่อแบ่งเงิน 350 บาท ให้พี่มีมากกว่าน้อง 50 บาท',
+          hint:'ลองเริ่มจากให้ทั้งสองคนเท่ากันก่อน แล้วค่อยย้ายเหรียญ 1 เหรียญ (50 บาท) จากน้องไปให้พี่' }
+      ]
+    },
+    {
+      title: 'ชั้นหนังสือของห้องเรียน',
+      story: 'ชั้นหนังสือมี <b>หนังสือการ์ตูนและหนังสือนิทานรวมกัน 60 เล่ม</b> · <b>หนังสือนิทานมากกว่าการ์ตูน 12 เล่ม</b> · (หนังสือถูกมัดชุดละ 6 เล่ม)',
+      steps: [
+        { type:'widget', widget:'bundlesSplit', points:100,
+          q:'🧱 ลงมือทำ · คลิกมัดหนังสือเพื่อแบ่ง 60 เล่ม ให้การ์ตูนน้อยกว่านิทาน 12 เล่ม',
+          hint:'ย้ายมัดละ 6 เล่ม ไปมาระหว่างสองชั้น · ดูผลต่างให้เป็น 12' }
+      ]
+    },
+    {
+      title: 'ปู่กับหลาน',
+      story: 'ปัจจุบัน <b>ปู่มีอายุมากกว่าหลาน 48 ปี</b> · <b>อีก 8 ปีข้างหน้า ปู่จะมีอายุเป็น 3 เท่าของหลาน</b>',
+      steps: [
+        { type:'widget', widget:'ageStepper', points:100,
+          q:'🧱 ลงมือทำ · กดปุ่ม +/− เพื่อหาอายุหลานปัจจุบัน ที่ทำให้อีก 8 ปี ปู่เป็น 3 เท่าของหลานพอดี',
+          hint:'ดูตัวเลข "เท่า" ด้านล่าง · ต้องให้ได้ 3.00 พอดี' }
+      ]
+    },
+    {
+      title: 'บัตรโดยสารรถไฟ',
+      story: 'ครอบครัวหนึ่งซื้อ <b>บัตรผู้ใหญ่ 2 ใบ และบัตรเด็ก 3 ใบ</b> · รวมจ่าย <b>340 บาท</b> · <b>บัตรผู้ใหญ่แพงกว่าบัตรเด็กใบละ 20 บาท</b>',
+      steps: [
+        { type:'widget', widget:'ticketStepper', points:100,
+          q:'🧱 ลงมือทำ · กดปุ่ม +/− เพื่อปรับราคาบัตรเด็ก ให้ยอดรวมเป็น 340 บาทพอดี',
+          hint:'บัตรผู้ใหญ่จะถูกคำนวณเป็น "ราคาบัตรเด็ก + 20" โดยอัตโนมัติ' }
+      ]
+    },
+    {
+      title: 'แพ็คผลไม้ใส่ถุง',
+      story: 'แม่ค้าแพ็คผลไม้ใส่ถุง · <b>ถุงทุเรียนใส่ 3 ลูก/ถุง</b> · <b>ถุงมังคุดใส่ 5 ลูก/ถุง</b> · แพ็คได้ <b>12 ถุง</b> · ใช้ผลไม้ <b>รวม 50 ลูก</b>',
+      steps: [
+        { type:'widget', widget:'bagToggle', points:100,
+          q:'🧱 ลงมือทำ · คลิกที่ถุงเพื่อสลับชนิด ให้ใช้ผลไม้รวม 50 ลูกพอดี',
+          hint:'ทุเรียน 1 ถุงใช้ 3 ลูก · มังคุด 1 ถุงใช้ 5 ลูก · ดูผลรวมด้านล่าง' }
+      ]
+    }
+  ],
+
+  2: [
+    {
+      title: 'กระปุกออมสินของพี่น้อง',
+      story: 'จากสถานการณ์เดิม · พี่มีเงินมากกว่าน้อง 50 บาท · รวมเงินทั้งสองคน 350 บาท<br>ตอนนี้เราจะ <b>แทนความสัมพันธ์นี้ด้วย Bar Model</b>',
+      steps: [
+        { type:'widget', widget:'barBuild', points:100,
+          q:'📊 สร้างแบบจำลอง · ให้ x แทนจำนวนเงินของน้อง · คลิกป้ายเพื่อเติมลงในแท่งทั้ง 3 ช่อง',
+          barNote:'Bar Model นี้แทนยอดเงินรวม 350 บาท · แบ่งเป็นส่วนของน้องและส่วนของพี่',
+          barRows:[
+            { label:'👦 น้อง', slots:1 },
+            { label:'🧑 พี่ (มากกว่าน้อง 50)', slots:1 },
+            { label:'💰 รวมทั้งหมด', slots:1 }
+          ],
+          barTrailer:'น้อง + พี่ = 350',
+          barPool:['x','x + 50','x − 50','350','50','2x'],
+          barCorrect:['x','x + 50','350'],
+          barSuccess:'เยี่ยม! แบบจำลองแสดงว่า x + (x + 50) = 350 — นี่คือ Bar Model ของสถานการณ์นี้',
+          barFail:'ยังไม่ถูก · ลองดูว่า "ส่วนของน้อง" คือปริมาณที่ไม่รู้ค่า · "ส่วนของพี่" มากกว่าน้อง 50 · "ส่วนรวม" คือ 350',
+          hint:'ส่วนของน้อง = x · ส่วนของพี่ = x + 50 · ส่วนรวม = 350' }
+      ]
+    },
+    {
+      title: 'ชั้นหนังสือของห้องเรียน',
+      story: 'หนังสือการ์ตูนและนิทานรวมกัน 60 เล่ม · นิทานมากกว่าการ์ตูน 12 เล่ม<br>แทนความสัมพันธ์นี้ด้วย <b>Bar Model</b>',
+      steps: [
+        { type:'widget', widget:'barBuild', points:100,
+          q:'📊 สร้างแบบจำลอง · ให้ x แทนจำนวนหนังสือการ์ตูน · เติมป้ายลงในแท่ง',
+          barNote:'Bar Model แทนจำนวนหนังสือทั้งหมด 60 เล่ม',
+          barRows:[
+            { label:'📕 การ์ตูน', slots:1 },
+            { label:'📘 นิทาน (มากกว่าการ์ตูน 12)', slots:1 },
+            { label:'📚 รวมทั้งหมด', slots:1 }
+          ],
+          barTrailer:'การ์ตูน + นิทาน = 60',
+          barPool:['x','x + 12','x − 12','60','12','2x'],
+          barCorrect:['x','x + 12','60'],
+          barSuccess:'ถูกต้อง! Bar Model นี้เขียนเป็นสมการได้: x + (x + 12) = 60',
+          barFail:'ยังไม่ถูก · "ส่วนของนิทาน" มากกว่าการ์ตูน 12 เล่ม',
+          hint:'การ์ตูน = x · นิทาน = x + 12 · รวม = 60' }
+      ]
+    },
+    {
+      title: 'ปู่กับหลาน',
+      story: 'จากสถานการณ์เดิม · อีก 8 ปีข้างหน้า ปู่จะมีอายุเป็น 3 เท่าของหลาน<br>แทนความสัมพันธ์นี้ด้วย <b>Bar Model</b>',
+      steps: [
+        { type:'widget', widget:'barBuild', points:100,
+          q:'📊 สร้างแบบจำลอง · ให้ x แทนอายุหลานปัจจุบัน · เติมป้ายลงในแท่งทั้ง 4 ช่อง',
+          barNote:'Bar Model นี้แสดง "อีก 8 ปีข้างหน้า" · หลาน 1 ส่วน · ปู่ 3 ส่วนยาวเท่ากัน',
+          barRows:[
+            { label:'⏩ หลาน (อีก 8 ปี)', slots:1 },
+            { label:'⏩ ปู่ (อีก 8 ปี) = 3 ส่วนเท่า ๆ กัน', slots:3 }
+          ],
+          barTrailer:'ปู่ = 3 × หลาน (อีก 8 ปี)',
+          barPool:['x + 8','x + 8','x + 8','x + 8','x','x + 48','x + 56'],
+          barCorrect:['x + 8','x + 8','x + 8','x + 8'],
+          barSuccess:'ถูกต้อง! อีก 8 ปี หลานอายุ x + 8 · ปู่มีอายุ 3 ส่วนเท่า ๆ กันของหลาน · เขียนเป็นสมการได้: 3(x + 8) = x + 56',
+          barFail:'ยังไม่ถูก · ทุกส่วนของปู่ต้องยาวเท่ากับส่วนของหลาน (อีก 8 ปี)',
+          hint:'อีก 8 ปี หลานอายุ = x + 8 · ปู่ = 3 ส่วนเท่า ๆ กัน · ทั้ง 4 ช่องจึงเป็น x + 8 เหมือนกัน' }
+      ]
+    },
+    {
+      title: 'บัตรโดยสารรถไฟ',
+      story: 'ซื้อบัตรผู้ใหญ่ 2 ใบ และบัตรเด็ก 3 ใบ · รวมจ่าย 340 บาท · บัตรผู้ใหญ่แพงกว่าบัตรเด็ก 20 บาท<br>แทนความสัมพันธ์นี้ด้วย <b>Bar Model</b>',
+      steps: [
+        { type:'widget', widget:'barBuild', points:100,
+          q:'📊 สร้างแบบจำลอง · ให้ x แทนราคาบัตรเด็ก · เติมป้ายให้ตรงกับแต่ละใบ',
+          barNote:'Bar Model นี้แทนยอดเงิน 340 บาท · ประกอบด้วย 5 ส่วน (บัตร 5 ใบ)',
+          barRows:[
+            { label:'🎫 บัตร 5 ใบ (ผู้ใหญ่ 2 + เด็ก 3)', slots:5 }
+          ],
+          barTrailer:'2(ผู้ใหญ่) + 3(เด็ก) = 340',
+          barPool:['x + 20','x + 20','x','x','x','x + 20','x − 20','340','20'],
+          barCorrect:['x + 20','x + 20','x','x','x'],
+          barSuccess:'เยี่ยม! บัตรผู้ใหญ่ = x + 20 (2 ใบ) · บัตรเด็ก = x (3 ใบ) · เขียนเป็นสมการ: 2(x+20) + 3x = 340',
+          barFail:'ยังไม่ถูก · บัตรผู้ใหญ่ราคา x + 20 · บัตรเด็ก ราคา x · ต้องมีผู้ใหญ่ 2 ใบ เด็ก 3 ใบ',
+          hint:'บัตรผู้ใหญ่ 2 ใบ = x + 20 · บัตรเด็ก 3 ใบ = x' }
+      ]
+    },
+    {
+      title: 'แพ็คผลไม้ใส่ถุง',
+      story: 'ทุเรียนถุงละ 3 ลูก · มังคุดถุงละ 5 ลูก · มี 12 ถุง · ผลไม้รวม 50 ลูก<br>แทนความสัมพันธ์นี้ด้วย <b>Bar Model</b>',
+      steps: [
+        { type:'widget', widget:'barBuild', points:100,
+          q:'📊 สร้างแบบจำลอง · ให้ x แทนจำนวนถุงทุเรียน · เติมป้ายลงในแท่ง',
+          barNote:'Bar Model นี้แทนจำนวนผลไม้ 50 ลูก · แบ่งเป็น "ผลไม้จากถุงทุเรียน" และ "ผลไม้จากถุงมังคุด"',
+          barRows:[
+            { label:'🥭 ผลไม้จากถุงทุเรียน', slots:1 },
+            { label:'🍇 ผลไม้จากถุงมังคุด', slots:1 },
+            { label:'💰 ผลไม้รวม', slots:1 }
+          ],
+          barTrailer:'ผลไม้จากทุเรียน + ผลไม้จากมังคุด = 50',
+          barPool:['3x','5x','5(12 − x)','3(12 − x)','50','12'],
+          barCorrect:['3x','5(12 − x)','50'],
+          barSuccess:'ถูกต้อง! ทุเรียน x ถุง → 3x ลูก · มังคุด (12 − x) ถุง → 5(12 − x) ลูก · เขียนเป็นสมการ: 3x + 5(12−x) = 50',
+          barFail:'ยังไม่ถูก · ทุเรียน 3 ลูก/ถุง (x ถุง) · มังคุด 5 ลูก/ถุง (12 − x ถุง)',
+          hint:'ผลไม้จากทุเรียน = 3x · ผลไม้จากมังคุด = 5(12 − x) · รวม = 50' }
+      ]
+    }
+  ],
+
+  3: [
+    {
+      title: 'กระปุกออมสินของพี่น้อง',
+      story: 'พี่มีเงินมากกว่าน้อง 50 บาท · รวมเงินทั้งสองคน 350 บาท · น้องมีเงินกี่บาท',
+      steps: [
+        { type:'choice', points:20,
+          q:'🧠 กำหนดตัวแปร · ถ้าให้ x แทนจำนวนเงินของน้อง ข้อใดเขียนจำนวนเงินของพี่ได้ถูกต้อง',
+          options:['x + 50','x − 50','50 − x','50x'],
+          answer:0,
+          hint:'พี่มีเงินมากกว่าน้อง 50 บาท → บวก 50 เข้ากับเงินของน้อง' },
+        { type:'equation', points:30,
+          q:'🧠 สร้างสมการ · จงสร้างสมการแสดงยอดเงินรวมของทั้งสองคน',
+          template:['___',' + ','___',' = ','___'],
+          pool:['x','x + 50','x − 50','350','50','2x'],
+          correct:['x','x + 50','350'],
+          hint:'เงินรวม = เงินน้อง + เงินพี่ = 350' },
+        { type:'number', points:25,
+          q:'🧠 แก้สมการ · น้องมีเงินกี่บาท',
+          answer:150, unit:'บาท',
+          hint:'x + (x + 50) = 350 → 2x + 50 = 350 → 2x = 300',
+          solution:'2x = 300 → x = 150 บาท' },
+        { type:'number', points:25,
+          q:'🧠 ตรวจสอบ · พี่มีเงินกี่บาท',
+          answer:200, unit:'บาท',
+          hint:'พี่ = น้อง + 50',
+          solution:'150 + 50 = 200 · ตรวจ: 150 + 200 = 350 ✓' }
+      ]
+    },
+    {
+      title: 'ชั้นหนังสือของห้องเรียน',
+      story: 'หนังสือการ์ตูนและนิทานรวมกัน 60 เล่ม · นิทานมากกว่าการ์ตูน 12 เล่ม · การ์ตูนมีกี่เล่ม',
+      steps: [
+        { type:'choice', points:20,
+          q:'🧠 กำหนดตัวแปร · ถ้าให้ x แทนจำนวนหนังสือการ์ตูน ข้อใดเขียนจำนวนหนังสือนิทานได้ถูกต้อง',
+          options:['x + 12','x − 12','12x','60 − 12'],
+          answer:0,
+          hint:'นิทานมากกว่าการ์ตูน 12 เล่ม' },
+        { type:'equation', points:30,
+          q:'🧠 สร้างสมการ · จงสร้างสมการแสดงจำนวนหนังสือทั้งหมด',
+          template:['___',' + ','___',' = ','___'],
+          pool:['x','x + 12','x − 12','60','12','2x'],
+          correct:['x','x + 12','60'],
+          hint:'การ์ตูน + นิทาน = 60' },
+        { type:'number', points:25,
+          q:'🧠 แก้สมการ · หนังสือการ์ตูนมีกี่เล่ม',
+          answer:24, unit:'เล่ม',
+          hint:'x + (x + 12) = 60 → 2x + 12 = 60 → 2x = 48',
+          solution:'2x = 48 → x = 24 เล่ม' },
+        { type:'number', points:25,
+          q:'🧠 ตรวจสอบ · หนังสือนิทานมีกี่เล่ม',
+          answer:36, unit:'เล่ม',
+          hint:'นิทาน = การ์ตูน + 12',
+          solution:'24 + 12 = 36 · ตรวจ: 24 + 36 = 60 ✓' }
+      ]
+    },
+    {
+      title: 'ปู่กับหลาน',
+      story: 'ปัจจุบันปู่มีอายุมากกว่าหลาน 48 ปี · อีก 8 ปีข้างหน้า ปู่จะมีอายุเป็น 3 เท่าของหลาน · ปัจจุบันหลานอายุกี่ปี',
+      steps: [
+        { type:'choice', points:20,
+          q:'🧠 กำหนดตัวแปร · ถ้าให้ x แทนอายุหลานปัจจุบัน ข้อใดเขียนอายุปู่อีก 8 ปีได้ถูกต้อง',
+          options:['x + 56','x + 48','x + 8','48x + 8'],
+          answer:0,
+          hint:'อายุปู่ปัจจุบัน = x + 48 · อีก 8 ปี = (x + 48) + 8' },
+        { type:'equation', points:30,
+          q:'🧠 สร้างสมการ · จงสร้างสมการ "อีก 8 ปี ปู่มีอายุเป็น 3 เท่าของหลาน"',
+          template:['___',' = 3 × ','___'],
+          pool:['x + 56','x + 48','x + 8','x − 8','3x + 8','x'],
+          correct:['x + 56','x + 8'],
+          hint:'ฝั่งซ้าย = อายุปู่อีก 8 ปี · ฝั่งขวา = 3 × อายุหลานอีก 8 ปี' },
+        { type:'number', points:25,
+          q:'🧠 แก้สมการ · ปัจจุบันหลานอายุกี่ปี',
+          answer:16, unit:'ปี',
+          hint:'x + 56 = 3(x + 8) → 32 = 2x',
+          solution:'2x = 32 → x = 16 ปี' },
+        { type:'number', points:25,
+          q:'🧠 ตรวจสอบ · ปัจจุบันปู่อายุกี่ปี',
+          answer:64, unit:'ปี',
+          hint:'ปู่ = หลาน + 48',
+          solution:'16 + 48 = 64 ปี · ตรวจ: อีก 8 ปี 72 = 3 × 24 ✓' }
+      ]
+    },
+    {
+      title: 'บัตรโดยสารรถไฟ',
+      story: 'ซื้อบัตรผู้ใหญ่ 2 ใบ และบัตรเด็ก 3 ใบ · รวมจ่าย 340 บาท · บัตรผู้ใหญ่แพงกว่าบัตรเด็ก 20 บาท · บัตรเด็กใบละกี่บาท',
+      steps: [
+        { type:'choice', points:20,
+          q:'🧠 กำหนดตัวแปร · ถ้าให้ x แทนราคาบัตรเด็ก ข้อใดคือสมการที่ถูกต้อง',
+          options:['2(x + 20) + 3x = 340','2x + 3x = 340','2(20) + 3x = 340','2(x − 20) + 3x = 340'],
+          answer:0,
+          hint:'บัตรผู้ใหญ่ 2 ใบ ใบละ (x + 20) · บัตรเด็ก 3 ใบ ใบละ x' },
+        { type:'number', points:30,
+          q:'🧠 แก้สมการ · บัตรเด็กมีราคาใบละกี่บาท',
+          answer:60, unit:'บาท',
+          hint:'2x + 40 + 3x = 340 → 5x = 300',
+          solution:'5x = 300 → x = 60 บาท' },
+        { type:'number', points:25,
+          q:'🧠 ตรวจสอบ · บัตรผู้ใหญ่มีราคาใบละกี่บาท',
+          answer:80, unit:'บาท',
+          hint:'บัตรผู้ใหญ่ = บัตรเด็ก + 20',
+          solution:'60 + 20 = 80 บาท' },
+        { type:'number', points:25,
+          q:'🧠 ตรวจสอบยอดรวม · 2(80) + 3(60) เท่ากับเท่าไร',
+          answer:340, unit:'บาท',
+          hint:'นำราคาบัตรแต่ละประเภทมาคำนวณยอดรวม',
+          solution:'160 + 180 = 340 บาท ✓' }
+      ]
+    },
+    {
+      title: '👑 บอส · แพ็คผลไม้ใส่ถุง',
+      story: 'ทุเรียนถุงละ 3 ลูก · มังคุดถุงละ 5 ลูก · มี 12 ถุง · ผลไม้รวม 50 ลูก · แพ็คทุเรียนได้กี่ถุง',
+      steps: [
+        { type:'choice', points:20,
+          q:'🧠 กำหนดตัวแปร · ถ้าให้ x แทนจำนวนถุงทุเรียน ข้อใดเขียนจำนวนถุงมังคุดได้ถูกต้อง',
+          options:['12 − x','x − 12','12 + x','x ÷ 12'],
+          answer:0,
+          hint:'ถุงทั้งหมด 12 ถุง · ทุเรียน x ถุง · ที่เหลือคือมังคุด' },
+        { type:'equation', points:30,
+          q:'🧠 สร้างสมการ · จงสร้างสมการแสดงจำนวนผลไม้ทั้งหมด',
+          template:['___',' + ','___',' = ','___'],
+          pool:['3x','5x','5(12 − x)','3(12 − x)','50','12'],
+          correct:['3x','5(12 − x)','50'],
+          hint:'ผลไม้ = 3×(ถุงทุเรียน) + 5×(ถุงมังคุด)' },
+        { type:'number', points:25,
+          q:'🧠 แก้สมการ · แพ็คทุเรียนได้กี่ถุง',
+          answer:5, unit:'ถุง',
+          hint:'3x + 60 − 5x = 50 → −2x = −10',
+          solution:'60 − 2x = 50 → x = 5' },
+        { type:'number', points:25,
+          q:'🧠 ตรวจสอบ · แพ็คมังคุดได้กี่ถุง',
+          answer:7, unit:'ถุง',
+          hint:'มังคุด = 12 − x',
+          solution:'12 − 5 = 7 ถุง · ตรวจ: 15 + 35 = 50 ✓' }
+      ]
+    }
+  ]
+};
+
+const STAGE_INFO = {
+  1: { name:'Concrete',  title:'ขั้นรูปธรรม',      cls:'c', icon:'🧱',
+       bridge:`<b>🧱 ขั้น Concrete · ลงมือจัดกระทำกับสิ่งของ</b>
+         <div style="margin-top:8px">เราได้ลงมือจัดเรียงเหรียญ หนังสือ อายุ บัตร และถุงผลไม้ จนมองเห็นความสัมพันธ์ของปริมาณด้วยตา</div>
+         <div class="arrow">↓</div>
+         <div><b>ต่อไป · ขั้น Pictorial</b> — เราจะเปลี่ยนความเข้าใจนี้ให้เป็น "ภาพหรือแบบจำลอง"</div>` },
+  2: { name:'Pictorial', title:'ขั้นกึ่งรูปธรรม',  cls:'p', icon:'📊',
+       bridge:`<b>📊 ขั้น Pictorial · สร้างแบบจำลองภาพ (Bar Model)</b>
+         <div style="margin-top:8px">เราได้เปลี่ยนความสัมพันธ์ของปริมาณให้เป็นภาพแทน ด้วย Bar Model</div>
+         <div class="arrow">↓</div>
+         <div><b>ต่อไป · ขั้น Abstract</b> — เราจะใช้ "ตัวแปร สัญลักษณ์ และสมการ" แทนแบบจำลอง</div>` },
+  3: { name:'Abstract',  title:'ขั้นนามธรรม',      cls:'a', icon:'🧠',
+       bridge:`<b>🧠 ขั้น Abstract · ใช้สัญลักษณ์และสมการ</b>
+         <div style="margin-top:8px">เราสามารถอ่านสถานการณ์ กำหนดตัวแปร สร้างสมการ แก้สมการ และตรวจสอบคำตอบได้ด้วยตนเองแล้ว</div>
+         <div class="arrow">↓</div>
+         <div><b>🎉 เสร็จสิ้นภารกิจ CPA</b></div>` }
+};
+
+const state = {
+  player: { name:'', cls:'', no:'' },
+  stage: 1,
+  qIndex: 0,
+  currentStep: 0,
+  stageScores: { 1:0, 2:0, 3:0 },
+  itemScore: 0,
+  itemStepData: [],
+  itemPerfect: false,
+  totalPerfect: 0
+};
+
+const $ = id => document.getElementById(id);
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+function stripNumber(str){
+  if (typeof str !== 'string') return NaN;
+  return parseFloat(str.replace(/[^0-9.\-]/g,''));
+}
+function normalize(str){
+  return String(str).replace(/\s+/g,'').replace(/[−–—]/g,'-');
+}
+
+$('btnStart').addEventListener('click', () => showScreen('screen-info'));
+$('btnBackHome').addEventListener('click', () => showScreen('screen-home'));
+
+$('btnConfirmInfo').addEventListener('click', () => {
+  const name = $('inpName').value.trim();
+  const cls  = $('inpClass').value.trim();
+  const no   = $('inpNo').value.trim();
+  if (!name || !cls || !no){ alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
+  state.player = { name, cls, no };
+  state.stage = 1;
+  state.qIndex = 0;
+  state.stageScores = {1:0,2:0,3:0};
+  state.totalPerfect = 0;
+  startQuestion();
+  showScreen('screen-game');
+});
+
+function updateHeader(){
+  $('hdrName').textContent = state.player.name || '-';
+  $('hdrSub').textContent = `${state.player.cls} · เลขที่ ${state.player.no}`;
+  $('avatar').textContent = (state.player.name || '?').charAt(0).toUpperCase();
+
+  const si = STAGE_INFO[state.stage];
+  const chip = $('hdrStage');
+  chip.textContent = `ด่าน ${state.stage} · ${si.name}`;
+  chip.className = 'stage-chip' + (state.stage===2?' p':state.stage===3?' a':'');
+
+  $('hdrScore').textContent = state.stageScores[state.stage];
+  $('hdrQ').textContent = `ข้อ ${state.qIndex + 1} / 5`;
+
+  const totalQ = 15;
+  const doneQ = (state.stage - 1) * 5 + state.qIndex;
+  const pct = Math.round((doneQ / totalQ) * 100);
+  $('hdrProgress').style.width = pct + '%';
+  $('hdrPercent').textContent = pct + '%';
+}
+
+function startQuestion(){
+  state.currentStep = 0;
+  state.itemScore = 0;
+  const q = QUESTIONS[state.stage][state.qIndex];
+  state.itemStepData = q.steps.map(() => ({ done:false, hinted:false }));
+  state.itemPerfect = true;
+  updateHeader();
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[state.stage][state.qIndex];
+  const wrap = $('qWrap');
+  wrap.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.innerHTML = `
+    <div class="q-title">
+      <span class="num-badge">${state.qIndex + 1}</span>
+      <span>${q.title}</span>
+    </div>
+    <div class="q-story">${q.story}</div>
+  `;
+  wrap.appendChild(card);
+
+  q.steps.forEach((step, i) => {
+    if (i > state.currentStep) return;
+    wrap.appendChild(renderStep(step, i));
+  });
+}
+
+function renderStep(step, i){
+  const box = document.createElement('div');
+  const data = state.itemStepData[i];
+  box.className = 'step-box' + (data.done ? ' done' : '');
+  box.id = 'step-' + i;
+
+  const head = document.createElement('div');
+  head.className = 'step-head';
+  head.innerHTML = `
+    <div class="step-circle">${data.done ? '✓' : (i + 1)}</div>
+    <div class="step-q">${step.q}</div>
+    <div class="step-pts">+${step.points}</div>
+  `;
+  box.appendChild(head);
+
+  if (data.done){
+    const fb = document.createElement('div');
+    fb.className = 'feedback ok show';
+    fb.textContent = '✓ ขั้นนี้ทำถูกต้องแล้ว';
+    box.appendChild(fb);
+    return box;
+  }
+
+  const body = document.createElement('div');
+  box.appendChild(body);
+
+  if (step.type === 'widget')   renderWidgetStep(body, step, i, box);
+  else if (step.type === 'choice')   renderChoice(body, step, i, box);
+  else if (step.type === 'equation') renderEquation(body, step, i, box);
+  else if (step.type === 'number')   renderNumber(body, step, i, box);
+
+  return box;
+}
+
+function renderWidgetStep(body, step, stepIdx, box){
+  const host = document.createElement('div');
+  body.appendChild(host);
+
+  const actions = document.createElement('div');
+  actions.className = 'step-actions';
+  const checkBtn = document.createElement('button');
+  checkBtn.type = 'button';
+  checkBtn.className = 'btn btn-primary';
+  checkBtn.textContent = 'ตรวจสอบ';
+  const hintBtn = document.createElement('button');
+  hintBtn.type = 'button';
+  hintBtn.className = 'btn btn-warn';
+  hintBtn.textContent = '💡 คำใบ้';
+  actions.appendChild(checkBtn);
+  actions.appendChild(hintBtn);
+  body.appendChild(actions);
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback';
+  body.appendChild(fb);
+
+  const widget = WIDGETS[step.widget](host, step);
+
+  checkBtn.addEventListener('click', () => {
+    const r = widget.check();
+    if (r.ok) finishStep(step, stepIdx, box, true, r.msg);
+    else {
+      fb.className = 'feedback err show';
+      fb.textContent = '❌ ' + r.msg;
+      state.itemPerfect = false;
+      state.itemScore = Math.max(0, state.itemScore - 3);
+      updateHeader();
+    }
+  });
+
+  hintBtn.addEventListener('click', () => {
+    if (state.itemStepData[stepIdx].hinted){
+      fb.className = 'feedback hint show';
+      fb.textContent = '💡 คุณใช้คำใบ้ของขั้นนี้ไปแล้ว';
+      return;
+    }
+    state.itemStepData[stepIdx].hinted = true;
+    state.itemPerfect = false;
+    state.itemScore = Math.max(0, state.itemScore - 10);
+    fb.className = 'feedback hint show';
+    fb.textContent = '💡 คำใบ้: ' + step.hint + ' (−10 คะแนน)';
+    updateHeader();
+  });
+}
+
+function renderChoice(body, step, stepIdx, box){
+  const list = document.createElement('div');
+  list.className = 'options-list';
+  let locked = false;
+
+  step.options.forEach((opt, oi) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'opt-btn';
+    b.textContent = `${String.fromCharCode(65 + oi)}. ${opt}`;
+    b.addEventListener('click', () => {
+      if (locked) return;
+      if (oi === step.answer){
+        locked = true;
+        b.classList.add('correct');
+        finishStep(step, stepIdx, box, true, '');
+      } else {
+        b.classList.add('wrong');
+        b.disabled = true;
+        state.itemPerfect = false;
+        state.itemScore = Math.max(0, state.itemScore - 3);
+        const fb = box.querySelector('.feedback');
+        if (fb){ fb.className = 'feedback err show'; fb.textContent = '❌ ยังไม่ถูก · ' + (step.hint || ''); }
+        updateHeader();
+      }
+    });
+    list.appendChild(b);
+  });
+  body.appendChild(list);
+
+  const actions = document.createElement('div');
+  actions.className = 'step-actions';
+  const hintBtn = document.createElement('button');
+  hintBtn.type = 'button';
+  hintBtn.className = 'btn btn-warn';
+  hintBtn.textContent = '💡 คำใบ้';
+  actions.appendChild(hintBtn);
+  body.appendChild(actions);
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback';
+  body.appendChild(fb);
+
+  hintBtn.addEventListener('click', () => {
+    if (state.itemStepData[stepIdx].hinted){
+      fb.className = 'feedback hint show';
+      fb.textContent = '💡 คุณใช้คำใบ้ของขั้นนี้ไปแล้ว';
+      return;
+    }
+    state.itemStepData[stepIdx].hinted = true;
+    state.itemPerfect = false;
+    state.itemScore = Math.max(0, state.itemScore - 10);
+    fb.className = 'feedback hint show';
+    fb.textContent = '💡 คำใบ้: ' + step.hint + ' (−10 คะแนน)';
+    updateHeader();
+  });
+}
+
+function renderEquation(body, step, stepIdx, box){
+  const slots = [];
+  const display = document.createElement('div');
+  display.className = 'eq-display';
+
+  step.template.forEach(tok => {
+    if (tok === '___'){
+      const s = document.createElement('button');
+      s.type = 'button';
+      s.className = 'eq-slot';
+      s.textContent = '?';
+      s.dataset.value = '';
+      slots.push(s);
+      s.addEventListener('click', () => {
+        if (s.classList.contains('filled')){
+          s.textContent = '?';
+          s.dataset.value = '';
+          s.classList.remove('filled');
+        }
+        document.querySelectorAll('.eq-slot').forEach(x => x.classList.remove('selected'));
+        s.classList.add('selected');
+        refreshPool();
+      });
+      display.appendChild(s);
+    } else {
+      const t = document.createElement('span');
+      t.className = 'eq-text';
+      t.textContent = tok;
+      display.appendChild(t);
+    }
+  });
+  body.appendChild(display);
+
+  const pool = document.createElement('div');
+  pool.className = 'eq-pool';
+  const chips = [];
+  step.pool.forEach(p => {
+    const c = document.createElement('button');
+    c.type = 'button';
+    c.className = 'eq-chip';
+    c.textContent = p;
+    c.dataset.value = p;
+    c.addEventListener('click', () => {
+      if (c.classList.contains('used')) return;
+      let target = display.querySelector('.eq-slot.selected:not(.filled)');
+      if (!target) target = slots.find(s => !s.classList.contains('filled'));
+      if (!target) return;
+      target.textContent = p;
+      target.dataset.value = p;
+      target.classList.add('filled');
+      target.classList.remove('selected');
+      refreshPool();
+    });
+    chips.push(c);
+    pool.appendChild(c);
+  });
+  body.appendChild(pool);
+
+  function refreshPool(){
+    const used = slots.map(s => s.dataset.value).filter(v => v);
+    chips.forEach(c => c.classList.toggle('used', used.includes(c.dataset.value)));
+  }
+
+  const actions = document.createElement('div');
+  actions.className = 'step-actions';
+  const checkBtn = document.createElement('button');
+  checkBtn.type = 'button';
+  checkBtn.className = 'btn btn-primary';
+  checkBtn.textContent = 'ตรวจคำตอบ';
+  const hintBtn = document.createElement('button');
+  hintBtn.type = 'button';
+  hintBtn.className = 'btn btn-warn';
+  hintBtn.textContent = '💡 คำใบ้';
+  actions.appendChild(checkBtn);
+  actions.appendChild(hintBtn);
+  body.appendChild(actions);
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback';
+  body.appendChild(fb);
+
+  checkBtn.addEventListener('click', () => {
+    const values = slots.map(s => s.dataset.value);
+    if (values.some(v => !v)){
+      fb.className = 'feedback err show';
+      fb.textContent = '⚠️ กรุณาเติมให้ครบทุกช่องก่อนนะ';
+      return;
+    }
+    const ok = values.length === step.correct.length &&
+      values.every((v, idx) => normalize(v) === normalize(step.correct[idx]));
+    if (ok) finishStep(step, stepIdx, box, true, '');
+    else {
+      fb.className = 'feedback err show';
+      fb.textContent = '❌ สมการยังไม่ถูกต้อง · ' + (step.hint || '');
+      state.itemPerfect = false;
+      state.itemScore = Math.max(0, state.itemScore - 3);
+      updateHeader();
+    }
+  });
+
+  hintBtn.addEventListener('click', () => {
+    if (state.itemStepData[stepIdx].hinted){
+      fb.className = 'feedback hint show';
+      fb.textContent = '💡 คุณใช้คำใบ้ของขั้นนี้ไปแล้ว';
+      return;
+    }
+    state.itemStepData[stepIdx].hinted = true;
+    state.itemPerfect = false;
+    state.itemScore = Math.max(0, state.itemScore - 10);
+    fb.className = 'feedback hint show';
+    fb.textContent = '💡 คำใบ้: ' + step.hint + ' (−10 คะแนน)';
+    updateHeader();
+  });
+}
+
+function renderNumber(body, step, stepIdx, box){
+  const row = document.createElement('div');
+  row.className = 'num-input-row';
+  const inp = document.createElement('input');
+  inp.className = 'num-input';
+  inp.type = 'text';
+  inp.inputMode = 'decimal';
+  inp.placeholder = 'พิมพ์คำตอบ...';
+  row.appendChild(inp);
+  if (step.unit){
+    const u = document.createElement('span');
+    u.className = 'num-unit';
+    u.textContent = step.unit;
+    row.appendChild(u);
+  }
+  body.appendChild(row);
+
+  const actions = document.createElement('div');
+  actions.className = 'step-actions';
+  const checkBtn = document.createElement('button');
+  checkBtn.type = 'button';
+  checkBtn.className = 'btn btn-primary';
+  checkBtn.textContent = 'ตรวจคำตอบ';
+  const hintBtn = document.createElement('button');
+  hintBtn.type = 'button';
+  hintBtn.className = 'btn btn-warn';
+  hintBtn.textContent = '💡 คำใบ้';
+  actions.appendChild(checkBtn);
+  actions.appendChild(hintBtn);
+  body.appendChild(actions);
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback';
+  body.appendChild(fb);
+
+  const doCheck = () => {
+    const raw = inp.value.trim();
+    if (!raw){ fb.className='feedback err show'; fb.textContent='⚠️ กรุณาพิมพ์คำตอบก่อนนะ'; return; }
+    const val = stripNumber(raw);
+    if (isNaN(val)){ fb.className='feedback err show'; fb.textContent='⚠️ กรุณาพิมพ์เป็นตัวเลขเท่านั้น'; return; }
+    if (Math.abs(val - step.answer) < 1e-6){
+      finishStep(step, stepIdx, box, true, step.solution || '');
+    } else {
+      inp.style.borderColor = '#ef4444';
+      setTimeout(()=>{ inp.style.borderColor = ''; }, 700);
+      fb.className = 'feedback err show';
+      fb.textContent = '❌ ยังไม่ถูก · ' + (step.hint || '');
+      state.itemPerfect = false;
+      state.itemScore = Math.max(0, state.itemScore - 3);
+      updateHeader();
+    }
+  };
+  checkBtn.addEventListener('click', doCheck);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') doCheck(); });
+
+  hintBtn.addEventListener('click', () => {
+    if (state.itemStepData[stepIdx].hinted){
+      fb.className = 'feedback hint show';
+      fb.textContent = '💡 คุณใช้คำใบ้ของขั้นนี้ไปแล้ว';
+      return;
+    }
+    state.itemStepData[stepIdx].hinted = true;
+    state.itemPerfect = false;
+    state.itemScore = Math.max(0, state.itemScore - 10);
+    fb.className = 'feedback hint show';
+    fb.textContent = '💡 คำใบ้: ' + step.hint + ' (−10 คะแนน)';
+    updateHeader();
+  });
+}
+
+function finishStep(step, stepIdx, box, correct, extraMsg){
+  const data = state.itemStepData[stepIdx];
+  if (data.done) return;
+  data.done = true;
+
+  if (correct) state.itemScore += step.points;
+
+  const fb = box.querySelector('.feedback');
+  if (fb){
+    fb.className = 'feedback ok show';
+    let msg = '✓ ถูกต้อง! +' + step.points + ' คะแนน';
+    if (extraMsg) msg += ' · ' + extraMsg;
+    fb.textContent = msg;
+  }
+  box.querySelectorAll('button, input').forEach(b => { b.disabled = true; });
+  box.classList.add('done');
+  const circ = box.querySelector('.step-circle');
+  if (circ) circ.textContent = '✓';
+
+  updateHeader();
+
+  const totalSteps = QUESTIONS[state.stage][state.qIndex].steps.length;
+  if (stepIdx + 1 < totalSteps){
+    state.currentStep = stepIdx + 1;
+    setTimeout(() => {
+      const q = QUESTIONS[state.stage][state.qIndex];
+      const newBox = renderStep(q.steps[state.currentStep], state.currentStep);
+      $('qWrap').appendChild(newBox);
+      newBox.scrollIntoView({ behavior:'smooth', block:'center' });
+    }, 700);
+  } else {
+    setTimeout(() => {
+      state.stageScores[state.stage] += state.itemScore;
+      if (state.itemPerfect) state.totalPerfect++;
+      updateHeader();
+      finishQuestion();
+    }, 800);
+  }
+}
+
+function finishQuestion(){
+  const wrap = $('qWrap');
+  const doneBox = document.createElement('div');
+  doneBox.className = 'q-card';
+  doneBox.style.textAlign = 'center';
+  const isLast = state.qIndex >= 4;
+
+  doneBox.innerHTML = `
+    <div style="font-size:52px;margin-bottom:8px;">${state.itemPerfect ? '🌟' : '💪'}</div>
+    <h3 style="color:#7dd3fc;margin-bottom:8px;font-size:20px;">
+      ${state.itemPerfect ? 'ยอดเยี่ยม! ไม่ใช้คำใบ้เลย' : 'ผ่านข้อนี้แล้ว!'}
+    </h3>
+    <p style="color:#94a3b8;font-size:15px;">
+      ข้อนี้ได้ <b style="color:#fde047;font-size:18px;">${state.itemScore}</b> คะแนน
+    </p>
+    <button id="btnNextQ" class="btn btn-primary" style="margin-top:18px;">
+      ${isLast ? 'ดูคะแนนด่านนี้ →' : 'ข้อถัดไป →'}
+    </button>
+  `;
+  wrap.appendChild(doneBox);
+  doneBox.scrollIntoView({ behavior:'smooth', block:'center' });
+
+  $('btnNextQ').addEventListener('click', () => {
+    if (isLast) showStageEnd();
+    else { state.qIndex++; startQuestion(); }
+  });
+}
+
+function showStageEnd(){
+  const stage = state.stage;
+  const score = state.stageScores[stage];
+  const si = STAGE_INFO[stage];
+
+  $('seIcon').textContent = si.icon;
+  $('seTitle').textContent = `ผ่านด่าน ${stage} · ${si.name} แล้ว!`;
+  $('seSubtitle').textContent = `${si.title} · ${state.player.name}`;
+  $('seScore').textContent = score;
+  $('seStars').textContent = score >= 450 ? '⭐⭐⭐' : score >= 350 ? '⭐⭐' : score >= 250 ? '⭐' : '✨';
+  $('seBridge').innerHTML = si.bridge;
+
+  const btn = $('btnNextStage');
+  btn.textContent = stage < 3 ? `ไปด่าน ${stage + 1} →` : 'ดูสรุปผลรวม 🏁';
+  showScreen('screen-stageend');
+}
+
+$('btnNextStage').addEventListener('click', () => {
+  if (state.stage < 3){
+    state.stage++;
+    state.qIndex = 0;
+    startQuestion();
+    showScreen('screen-game');
+  } else {
+    showFinal();
+    showScreen('screen-final');
+  }
+});
+
+function showFinal(){
+  const total = state.stageScores[1] + state.stageScores[2] + state.stageScores[3];
+  $('finalScore').textContent = total;
+  $('fsC').textContent = state.stageScores[1];
+  $('fsP').textContent = state.stageScores[2];
+  $('fsA').textContent = state.stageScores[3];
+  $('fsPerfect').textContent = state.totalPerfect;
+
+  let msg;
+  if (total >= 1300) msg = '🌟 ยอดเยี่ยมมาก! เข้าใจกระบวนการ CPA อย่างลึกซึ้ง';
+  else if (total >= 1000) msg = '👏 ดีมาก! พร้อมต่อยอดกับโจทย์ที่ซับซ้อนขึ้น';
+  else if (total >= 700) msg = '💪 ผ่านแล้ว! ลองทบทวนการสร้างสมการอีกครั้ง';
+  else msg = '✨ เสร็จภารกิจแล้ว! ลองเล่นซ้ำเพื่อฝึกฝนให้คล่องขึ้น';
+  $('finalMsg').textContent = msg;
+
+  resetSendState();
+}
+
+$('btnPlayAgain').addEventListener('click', () => {
+  state.stage = 1;
+  state.qIndex = 0;
+  state.currentStep = 0;
+  state.stageScores = {1:0,2:0,3:0};
+  state.totalPerfect = 0;
+  state.itemScore = 0;
+  resetSendState();
+  startQuestion();
+  showScreen('screen-game');
+});
+
+/* ===================================================================
+   📤 ระบบส่งคะแนนเข้า Google Sheets
+   =================================================================== */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytluw8dt4Dc4IeWzlIythg5l-ApBzSR4nShLvh9I368ro0m1wKg6he87b_iHgFu3An7Q/exec';
+
+let scoreSent = false;
+let isSending = false;
+
+const btnSend    = document.getElementById('btnSendScore');
+const sendStatus = document.getElementById('sendStatus');
+
+function resetSendState(){
+  scoreSent = false;
+  isSending = false;
+  sendStatus.className = 'send-status';
+  sendStatus.textContent = '';
+  btnSend.disabled = false;
+  btnSend.textContent = '📤 ส่งคะแนน';
+  btnSend.classList.remove('btn-ghost');
+  btnSend.classList.add('btn-success');
+}
+
+function showSendStatus(type, message){
+  sendStatus.className = 'send-status show ' + type;
+  sendStatus.textContent = message;
+}
+
+async function sendScoreToSheet(){
+  if (scoreSent || isSending) return;
+
+  isSending = true;
+  btnSend.disabled = true;
+  btnSend.textContent = '⏳ กำลังส่ง...';
+  showSendStatus('loading', '⏳ กำลังส่งคะแนน...');
+
+  const payload = {
+    name        : state.player.name,
+    cls         : state.player.cls,
+    no          : state.player.no,
+    stageScores : {
+      1: state.stageScores[1],
+      2: state.stageScores[2],
+      3: state.stageScores[3]
+    },
+    totalScore  : state.stageScores[1] + state.stageScores[2] + state.stageScores[3],
+    totalPerfect: state.totalPerfect
+  };
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method : 'POST',
+      mode   : 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body   : JSON.stringify(payload)
+    });
+
+    scoreSent = true;
+    showSendStatus('success', '✅ ส่งคะแนนเรียบร้อยแล้ว');
+    btnSend.textContent = '✅ ส่งคะแนนแล้ว';
+    btnSend.classList.remove('btn-success');
+    btnSend.classList.add('btn-ghost');
+    btnSend.disabled = true;
+
+  } catch (err) {
+    console.error('Send score error:', err);
+    showSendStatus('error',
+      '❌ เกิดข้อผิดพลาด · ไม่สามารถส่งคะแนนได้ กรุณาตรวจสอบอินเทอร์เน็ต แล้วกด "ลองส่งใหม่"');
+    btnSend.disabled = false;
+    btnSend.textContent = '📤 ลองส่งใหม่';
+  } finally {
+    isSending = false;
+  }
+}
+
+btnSend.addEventListener('click', sendScoreToSheet);
+
+showScreen('screen-home');
+</script>
+</body>
+</html>
